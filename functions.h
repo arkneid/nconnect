@@ -8,6 +8,6 @@ int nc_strlen(const char* str);
 void write_file(int nargs, char** args, const char* file_name);
 char* nc_strcpy(char* dst, const char* src);
 void write_file_portal(int nargs, char** args, const char* file_name);
-void connect_history(char* network_name);
+void connect_history(char* network_name, char* net_card, const char* int_file);
 
 #endif

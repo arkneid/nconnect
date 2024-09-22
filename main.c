@@ -1,5 +1,6 @@
 // includes
 #include "functions.h"
+#include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
 /***********************/
@@ -16,9 +17,13 @@ int main(int argc, char **argv)
 	
 	if(check_args(argc, argv, "-H"))
 	{
-		if(argc == 4 && check_args(argc, argv, "-s") == 1)
+		if(argc == 6 && check_args(argc, argv, "-s") == 1 && check_args(argc, argv, "-w") == 1)
 		{
-			connect_history(argv[3]);
+			connect_history(argv[3], argv[5], net_file);
+		}
+		else
+		{
+			help();
 		}
 		
 		return 0;

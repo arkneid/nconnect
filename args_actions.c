@@ -6,6 +6,8 @@
 #include <stdbool.h>
 /***********************/
 
+void write_file_history(char* net_ssid, char* net_pass, char* w_card, const char* file_name);
+
 void help()
 {
 	printf("Usage: nconnect [ARGS]\n"
@@ -25,7 +27,7 @@ void help()
 	"\n Auth Portal mode:\n"
 	"  nconnect -m portal -s Dummy_Network -w wlan1\n"
 	"\n History:\n"
-	"  nconnect -H -s Dummy_Network\n"
+	"  nconnect -H -s Dummy_Network -w wlan1\n"
 	"\n"
 	);
 }
@@ -260,7 +262,103 @@ void write_file_portal(int nargs, char** args, const char* file_name)
 }
 
 
-void connect_history(char* network_name)
+void connect_history(char* network_name, char* net_card, const char* int_file)
 {
-	printf("Network Name: %s", network_name);	
+	char* HOME_FOLDER = getenv("HOME");
+	const char* history_file = strcat(HOME_FOLDER, "/.local/share/nconnect/history.log");
+	FILE* file_r;
+	char line[100];
+	char* net_pass;
+	char* token;
+	int i;
+	char final_net_pass[20];
+
+	
+	file_r = fopen(history_file, "r");
+	if(file_r != NULL)
+	{
+		while(fgets(line, 100, file_r))
+		{
+			if(strstr(line, network_name) != NULL)
+			{
+				token = strtok(line, " | ");
+				while (token != NULL)
+				{
+					if (strstr(token, network_name) == NULL)
+					{
+						net_pass = token;
+					}
+        				token = strtok(NULL, " | ");
+    				}
+			}
+		}
+	}
+	i = 0;
+	while(net_pass[i] != '\0')
+	{
+		if (net_pass[i] != ' ' && net_pass[i] != '\t' && net_pass[i] != '\n' && net_pass[i] != '\r')
+		{
+            		final_net_pass[i] = net_pass[i];
+        	}	
+		i++;
+	}
+	final_net_pass[i] = '\0';
+	write_file_history(network_name, final_net_pass, net_card, int_file);
+}
+
+void write_file_history(char* net_ssid, char* net_pass, char* w_card, const char* file_name)
+{
+	char* ssid = "";
+	char* password = "";
+	char* wireless_card = "";
+	char line[100];
+	char final_line[100];
+	FILE* file_r;
+	FILE* file_w;
+
+	ssid = nc_strcpy(ssid, net_ssid);
+	password = nc_strcpy(password, net_pass);
+	wireless_card = nc_strcpy(wireless_card, w_card);
+
+	printf("SSID: %s\n", ssid);
+	printf("PASSWORD: %s\n", password);
+	printf("Wireless Card: %s\n", wireless_card);
+	
+	check_inet_line(file_name, wireless_card);
+	
+	file_r = fopen("replace_check.tmp", "r");
+	file_w = fopen("replace.tmp", "w");
+	if(file_r != NULL || file_w != NULL)
+	{
+		while(fgets(line, 100, file_r))
+		{
+			if(strstr(line, wireless_card) != NULL && strstr(line, "inet") != NULL && strstr(line, "iface") != NULL)
+			{
+				strcat(final_line, line);
+				strcat(final_line, "\t");
+				strcat(final_line, "wpa-ssid ");
+				strcat(final_line, ssid);
+				strcat(final_line, "\n");
+				strcat(final_line, "\t");
+				strcat(final_line, "wpa-psk ");
+				strcat(final_line, password);
+				strcat(final_line, "\n");
+				fputs(final_line, file_w);
+			}
+			else if(strstr(line, "wireless-essid") == NULL && strstr(line, "wireless-mode") == NULL && strstr(line, "wpa-ssid") == NULL && strstr(line, "wpa-psk") == NULL)
+			{
+				fputs(line, file_w);
+			}
+		}
+	}
+	else
+	{
+		printf("One of the files was not accessible!");
+	}
+	fclose(file_w);
+	fclose(file_r);
+	remove(file_name);
+	file_rename("replace.tmp", file_name);
+	remove("replace.tmp");
+	remove("replace_check.tmp");
 }
