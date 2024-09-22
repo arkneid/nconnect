@@ -18,11 +18,13 @@ int main(int argc, char **argv)
 	{
 		if(argc == 4 && check_args(argc, argv, "-s") == 1)
 		{
-			// Call function of history
+			connect_history(argv[3]);
 		}
+		
+		return 0;
 	}
 	
-	if(argc == 7)
+	if(argc == 7 && check_args(argc, argv, "-H") != 1)
 	{
 		if(check_args(argc, argv, "-m"))
 		{

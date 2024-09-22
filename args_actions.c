@@ -258,3 +258,9 @@ void write_file_portal(int nargs, char** args, const char* file_name)
 	free(conn_mode);
 	free(wireless_card);
 }
+
+
+void connect_history(char* network_name)
+{
+	printf("Connect History");	
+}
