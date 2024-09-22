@@ -262,5 +262,5 @@ void write_file_portal(int nargs, char** args, const char* file_name)
 
 void connect_history(char* network_name)
 {
-	printf("Connect History");	
+	printf("Network Name: %s", network_name);	
 }
