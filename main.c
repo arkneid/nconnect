@@ -14,6 +14,13 @@ int main(int argc, char **argv)
 		return 0;
 	}
 	
+	if(check_args(argc, argv, "-H"))
+	{
+		if(argc == 4 && check_args(argc, argv, "-s") == 1)
+		{
+			// Call function of history
+		}
+	}
 	
 	if(argc == 7)
 	{

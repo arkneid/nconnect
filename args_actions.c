@@ -16,6 +16,7 @@ void help()
 	"  -p\t\tPassword of the network\n"
 	"  -w\t\tWireless card name\n"
 	"  -m\t\tMode of connection\n"
+	"  -H\t\tHistory of connections. This argument just can be used with -s argument\n"
 	"  -h, --help\tDisplay this help and exit\n"
 	"\n"
 	"Examples:\n"
@@ -23,6 +24,8 @@ void help()
 	"  nconnect -s Dummy_Network -p nEtWorkPass -w wlan1\n"
 	"\n Auth Portal mode:\n"
 	"  nconnect -m portal -s Dummy_Network -w wlan1\n"
+	"\n History:\n"
+	"  nconnect -H -s Dummy_Network\n"
 	"\n"
 	);
 }
